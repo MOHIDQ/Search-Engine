@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const Handlebars = require('handlebars')
 app.use(express.static('public'));
-app.set('view engine', 'pug') //setting pug 
 const Graph = require('graph-data-structure')
 const Crawler = require("crawler")
 const domain = "https://people.scs.carleton.ca/~davidmckenney/fruitgraph"
@@ -565,15 +564,6 @@ mongoClient.connect(mongoUrl, (err, db) => {
     //target is the key, source is the value to be added into the values array of target key
 
 })
-
-
-
-
-
-
-//have function take arr and value and return index the value is in the array
-//we will use the topological sort to match the adjacency matrix, so whatever index
-//the value is in the topological array is the index in the adjancey matrix
 
 //helper function to sort the search results by score with page rank boosting
 function compareScores(a, b) {
