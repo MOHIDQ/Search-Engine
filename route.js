@@ -1,5 +1,5 @@
 const mongoClient = require('mongodb').MongoClient
-const mongoUrl = "mongodb+srv://main:dbmain@products4601.ki1ci.mongodb.net/product?retryWrites=true&w=majority"
+const mongoUrl = "REDACTED"
 const elasticlunr = require("elasticlunr");
 const helper = require('./helper')
 const domain = "https://people.scs.carleton.ca/~davidmckenney/fruitgraph"
