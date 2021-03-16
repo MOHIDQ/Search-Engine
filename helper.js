@@ -1,9 +1,11 @@
 const {Matrix} = require("ml-matrix");
 const Graph = require('graph-data-structure')
+const Handlebars = require('handlebars')
 
 module.exports = {
     compareScores: compareScores,
-    pageRankCalc: pageRankCalc
+    pageRankCalc: pageRankCalc,
+    renderTemplate: renderTemplate
 }
 
 //helper function to sort the search results by score with page rank boosting
@@ -130,5 +132,25 @@ function comparePageRank(a, b) {
       return -1;
     }
     return 0;
+}
+
+//function that renders the handlebars template when a search occurs
+function renderTemplate(res) {
+    console.log(res.locals.results.length)
+    //setting up handlebars template
+    let src =   "<p>{{number}})  {{title}}</p>" + 
+    "<ul> <li>Score: {{score}}</li>    </ul>" +
+    "<ul> <li>URL: <a target = _blank href = {{url}} >{{url}}</a></li> <br> <li>Out Going Links: {{outGoingLinks}}</li> <br> <li>In Coming Links: {{incomingLinks}}</li></ul>" +
+    "<br>"
+    let result = ""
+    let template = Handlebars.compile(src);
+
+    for (let i = 0; i < res.locals.results.length; i++) {
+        console.log(res.locals.results[i].title)
+        let obj =   {number: i+1, title: res.locals.results[i].title, score: res.locals.results[i].score, 
+            url: res.locals.results[i].url, outGoingLinks: res.locals.results[i].outGoingLinks, incomingLinks: res.locals.results[i].incomingLinks}
+        result = result + template(obj);
+    }
+    return result
 }
 

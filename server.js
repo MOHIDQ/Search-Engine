@@ -10,6 +10,7 @@ const mongoUrl = "REDACTED"
 const elasticlunr = require("elasticlunr");
 const {Matrix} = require("ml-matrix");
 const helper = require('./helper')
+const route = require('./route')
 
 //init for fruit 
 let graph = Graph()
@@ -148,79 +149,15 @@ mongoClient.connect(mongoUrl, (err, db) => {
 
 
 
-    //ROUTING SECTION
-    //supports the query params, q (search value), boost ( true or false ), limit (10 default, 50 max, 1 min)
-    app.get("/fruits", (req, res) => {
-        let searchValue = req.query.q 
-        let resultLimit = req.query.limit
-        let isBoosted = JSON.parse(req.query.boost)
-        mainDB.collection("LinkInfo").find({}, {projection: {_id: 0, linkContent: 1, linkID: 1, pageRank: 1, link: 1, containedLinks: 1, incomingLinks: 1}}).toArray( (err, result) => {
-            if (err) throw err 
-
-            //loop through all the link data and create documents for each one and add to elasticlunr index
-            for (let i = 0; i < result.length; i++) {
-                let document = {
-                    "id": result[i].linkID,
-                    "title": result[i].linkContent.title,
-                    "body": result[i].linkContent.content
-                }
-                searchIndex.addDoc(document)
-            }
-            //getting all the scores for each result
-            let searchResult = searchIndex.search(searchValue)
-
-            //adding the title and url of each of the given search results
-            //luckily the ids/ref are the same pattern as the title and url of each page
-            //we can retrieve the url and title from the ref/id 
-            for (let i = 0; i < searchResult.length; i++) {
-                searchResult[i].title = searchResult[i].ref
-                searchResult[i].url = domain + "/" + searchResult[i].ref + ".html"
-
-                let outGoingLink = result.find(x => x.linkID === searchResult[i].ref)
-                searchResult[i].outGoingLinks = outGoingLink.containedLinks
-
-                let incomingLink = result.find(x => x.linkID === searchResult[i].ref)
-                searchResult[i].incomingLinks = incomingLink.incomingLinks
-            }
-
-            //if boost option is true we then use pagerank values to rank search results
-            if (isBoosted === true) {
-                    for (let i = 0; i < searchResult.length; i++) {
-                        let prVal = result.find(x => x.link === searchResult[i].url)
-                        console.log(prVal)
-                        //searchResult[i].score = searchResult[i].score * prVal.pageRank.pageRank
-                        searchResult[i].score = searchResult[i].score + prVal.pageRank.pageRank
-
-                    }
-                //sort by scores after page rank boosting
-                searchResult.sort(helper.compareScores)
-                if(searchResult.length > resultLimit) {
-                    searchResult.length = resultLimit
-                }
-
-                res.locals.results = searchResult
-                res.status(200).send(renderTemplate(res))
-
-            }
-            //no boosting with page rank scores required
-            else {
-                if(searchResult.length > resultLimit) {
-                    searchResult.length = resultLimit
-                }
-                res.locals.results = searchResult
-                res.status(200).send(renderTemplate(res))
-            }
-
-        })
-        
-    })
-    
+    //ROUTING SECTION    
     //route for the main page and acts as middleware for case that if query param exists 
     //go to next matching route and try for searches
     app.get("/", (req, res, next) => {
         res.sendFile('public/main.html', { root: __dirname });
-        
     })
+
+    //supports the query params, q (search value), boost ( true or false ), limit (10 default, 50 max, 1 min)
+    app.get('/fruits', route.fruitResults)
 
 
     //function that starts the queue
@@ -230,25 +167,7 @@ mongoClient.connect(mongoUrl, (err, db) => {
     }
 
 
-    //function that renders the handlebars template when a search occurs
-    function renderTemplate(res) {
-        console.log(res.locals.results.length)
-        //setting up handlebars template
-        let src =   "<p>{{number}})  {{title}}</p>" + 
-        "<ul> <li>Score: {{score}}</li>    </ul>" +
-        "<ul> <li>URL: <a target = _blank href = {{url}} >{{url}}</a></li> <br> <li>Out Going Links: {{outGoingLinks}}</li> <br> <li>In Coming Links: {{incomingLinks}}</li></ul>" +
-        "<br>"
-        let result = ""
-        let template = Handlebars.compile(src);
-
-        for (let i = 0; i < res.locals.results.length; i++) {
-            console.log(res.locals.results[i].title)
-            let obj =   {number: i+1, title: res.locals.results[i].title, score: res.locals.results[i].score, 
-                url: res.locals.results[i].url, outGoingLinks: res.locals.results[i].outGoingLinks, incomingLinks: res.locals.results[i].incomingLinks}
-            result = result + template(obj);
-        }
-        return result
-    }
+    
 
     //function for getting the incoming links for each link, returns object, key is url, and the value is array of links 
     //that leed to the target url
