@@ -1,5 +1,5 @@
 const mongoClient = require('mongodb').MongoClient
-const mongoUrl = "REDACT"
+const mongoUrl = "REDACTED"
 const elasticlunr = require("elasticlunr");
 const helper = require('./helper')
 const domain = "https://people.scs.carleton.ca/~davidmckenney/fruitgraph"
@@ -25,7 +25,6 @@ function fruitResults(req, res) {
 
         mainDB.collection("LinkInfo").find({}, {projection: {_id: 0, linkContent: 1, linkID: 1, pageRank: 1, link: 1, containedLinks: 1, incomingLinks: 1}}).toArray( (err, result) => {
             if (err) throw err 
-
             //loop through all the link data and create documents for each one and add to elasticlunr index
             for (let i = 0; i < result.length; i++) {
                 let document = {

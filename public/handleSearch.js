@@ -7,7 +7,7 @@ function getSearchResult() {
     if (searchLimit < 1 | searchLimit > 50) {
         searchLimit = 10 // default 10
     }
-    let url = `http://3.138.215.232:3000/${data}?q=${searchValue}&limit=${searchLimit}&boost=${isBoost}`
+    let url = `http://localhost:3000/${data}?q=${searchValue}&limit=${searchLimit}&boost=${isBoost}`
 
     window.open(url)
     
