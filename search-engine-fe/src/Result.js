@@ -5,6 +5,11 @@ class Result extends Component {
         super()
     }
 
+    componentDidMount() {
+        console.log("Mounted")
+        console.log(this.props)
+    }
+
     render() {
         return(
             <div>
