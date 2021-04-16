@@ -76,7 +76,8 @@ function fruitResults(req, res) {
                     searchResult.length = resultLimit
                 }
                 res.locals.results = searchResult
-                res.status(200).send(helper.renderTemplate(res))
+                //res.status(200).send(helper.renderTemplate(res))
+                res.status(200).send(searchResult)
             }
         })
 

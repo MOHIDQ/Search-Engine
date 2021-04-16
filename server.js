@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const Handlebars = require('handlebars')
 app.use(express.static('public'));
+const cors = require('cors')
+
 
 const mongoClient = require('mongodb').MongoClient
 const mongoUrl = "REDACTED"
@@ -10,6 +12,7 @@ const route = require('./route')
 const crawl = require("./CrawlSite")
 
 
+app.use(cors())
 
 mongoClient.connect(mongoUrl, (err, db) => {
     let mainDB = db.db('Crawler')
