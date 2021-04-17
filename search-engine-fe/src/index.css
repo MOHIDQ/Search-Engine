@@ -11,34 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-
-.homeDiv {
-  text-align: center;
-}
-
-h1 {
-  font-size: 3em !important;
-}
-
-.searchInp {
-  width: 65% !important;
-  display: inline !important;
-}
-
-.boost {
-  width: 35% !important;
-  display: inline !important;
-}
-
-.numResults {
-  width: 35% !important;
-  display: inline !important;
-}
-
-.form-control {
-  border-radius: 1rem !important;
-}
-button {
-  border-radius: 1rem !important;
-}
