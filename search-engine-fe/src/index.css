@@ -12,6 +12,28 @@ code {
     monospace;
 }
 
+.fa-github {
+  color: #F4B400;
+}
+.fa {
+  font-size: 1em !important;
+  text-align: center;
+  text-decoration: none !important;
+  margin: 5px 2px;
+  }
+
+  .fa:hover {
+    opacity: 0.7;
+    color: #f4b300c8;
+}
+
+.spinner-border {
+  margin: 0px 10px;
+}
+
+.resultDiv {
+  overflow-y: auto;
+}
 
 .homeDiv {
   text-align: center;
