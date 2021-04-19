@@ -1,5 +1,5 @@
 const mongoClient = require('mongodb').MongoClient
-const mongoUrl = "REDACTED"
+const mongoUrl = ""
 const elasticlunr = require("elasticlunr");
 const helper = require('./helper')
 const domain = "https://people.scs.carleton.ca/~davidmckenney/fruitgraph"
@@ -67,7 +67,7 @@ function fruitResults(req, res) {
                 }
 
                 res.locals.results = searchResult
-                res.status(200).send(helper.renderTemplate(res))
+                res.status(200).send(searchResult)
 
             }
             //no boosting with page rank scores required

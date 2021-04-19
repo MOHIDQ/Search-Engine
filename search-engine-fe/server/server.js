@@ -6,7 +6,7 @@ const cors = require('cors')
 
 
 const mongoClient = require('mongodb').MongoClient
-const mongoUrl = "REDACTED"
+const mongoUrl = ""
 const helper = require('./helper')
 const route = require('./route')
 const crawl = require("./CrawlSite")

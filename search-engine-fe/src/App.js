@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Result from "./Result"
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,6 +10,8 @@ import {
 class App extends Component {
   constructor() {
     super();
+    this.state = {searchVal: "", boost: true, numResults: 10, url: ""}
+    this.history = []
 
   }
 
@@ -25,13 +28,19 @@ class App extends Component {
         });
   }
 
+  searchClick = () => {
+    let url = `/search?q=${this.state.searchVal}&boost=${this.state.boost}&limit=${this.state.numResults}`
+    this.setState({url: url})
+    window.open(url)
+  }
+
   render() {
     return(
       <div>
         <Router>
         <Switch>
-          <Route path="/result">
-            <Result url="test"/>
+          <Route exact path="/search" component={Result}>
+            <Result/>
           </Route>
           <Route path="/">
             <div className="homeDiv"> 
@@ -68,25 +77,28 @@ class App extends Component {
               <div className="card bg-light text-dark">
                 <div className="card-body">
                   <div className="search"> 
-                    <input className="form-control searchInp"></input>
-                    <button onClick={() => {window.location.href="/result"}} type="button" className="btn btn-outline-dark">Search</button>
+                    <input className="form-control searchInp" value={this.state.searchVal} onChange={(val) => {this.setState({searchVal: val.target.value})} }></input>
+                    <button onClick={() => this.searchClick()} type="button" className="btn btn-outline-dark">Search</button>
                   </div>
                   <div className="settings">
-                    <input type="Number" className="form-control numResults" placeholder="# of Results"></input>
-                    <select class="form-control boost">
-                      <option>No Boost</option>
-                      <option>Boost</option>
+                    <input type="Number" className="form-control numResults" placeholder="# of Results" value={this.state.numResults} onChange={(val) => {this.setState({numResults: val.target.value})}}></input>
+                    <select className="form-control boost" onChange={(val) => {this.setState({boost: val.target.value})}}>
+                      <option value="false">No Boost</option>
+                      <option value="true">Boost</option>
                   </select>
 
                   </div>
                     
-                </div>
+                </div>  
               </div>
               
             </div>
           </Route>
+          
         </Switch>
+        
         </Router>
+        
       </div>
     );
   }
