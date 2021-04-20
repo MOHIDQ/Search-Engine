@@ -7,6 +7,12 @@ class App extends Component {
     this.state = {searchVal: "", boost: true, numResults: 10, results: [], loading: false}
   }
 
+  handleKeyPress = (e) => {
+    if(e.key === 'Enter') {
+      this.searchFetch()
+    }
+  }
+
   searchFetch = () => {
     console.log("Clicked")
     this.setState({loading: true, results: []})
@@ -61,7 +67,7 @@ class App extends Component {
               <div className="card bg-light text-dark">
                 <div className="card-body">
                   <div className="search"> 
-                    <input className="form-control searchInp" value={this.state.searchVal} onChange={(val) => {this.setState({searchVal: val.target.value})} }></input>
+                    <input className="form-control searchInp" onKeyPress={this.handleKeyPress} value={this.state.searchVal} onChange={(val) => {this.setState({searchVal: val.target.value})} }></input>
                     <button onClick={() => this.searchFetch()} type="button" className="btn btn-outline-dark">Search</button>
                   </div>
                   <div className="settings">
